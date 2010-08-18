@@ -1,0 +1,4 @@
+*.py[co]
+mandelbrot.png
+mandelbrot.ppm
+mandelbrot.prof

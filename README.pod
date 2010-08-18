@@ -1,0 +1,31 @@
+=head1 TITLE
+
+pylvi - Cloud computing anywhere
+
+=head1 IDEA
+
+ (cat slave.py;echo "message")|
+ perl -e 'use File::Temp qw/tempfile/;sysread STDIN,$code,shift;($fh,$fn)=tempfile;print $fh $code;exec "python",$fn;' `cat slave.py|wc -c`
+
+=head1 DESCRIPTION
+
+...
+
+=head1 CLOUD CONFIGURATION
+
+Cloud configuration file is in simple line based format.  Empty lines and lines
+beginning with # character are skipped.
+
+On every line there should be the hostname of the server, also there may be an
+alternative path to the python executable and hard limit of the worker pool
+size on the remote host.
+
+=head2 Example
+
+ # This is a comment
+ # host [pythonpath [poolsize]]
+ example.com /opt/python2.6/bin/python 3
+
+=head1 SEE ALSO
+
+http://codespeak.net/execnet/
