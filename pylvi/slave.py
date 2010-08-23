@@ -41,6 +41,10 @@ class Processor:
 	def __iter__(self):
 		return self
 
+	def complete(self):
+		self.pool.close()
+		self.pool.join()
+
 	def next(self):
 		log.debug("processor next, jobs %d", len(self.jobs))
 
@@ -164,31 +168,10 @@ class IO:
 
 io = IO()
 
-
-def process_job(job_id, job):
-	global cpucount
-	global processor
-
-	# Asynchronous way
-	if processor is None:
-		processor = Processor(cpucount)
-
-	processor.process_job(job_id, job)
-	return None
-
-	# Synchronous way
-  #
-	#func, args, kwargs = job
-	#log.info("got job %d", job_id)
-  #
-	#res = func(*args, **kwargs)
-	#log.info("job %d calculated", job_id)
-  #
-	#return {'type': 'jobdone', "jobid": job_id, 'result': res}
-
 def process_message(msg):
 	global run
 	global modulepath
+	global processor
 
 	t = msg["type"]
 
@@ -197,6 +180,9 @@ def process_message(msg):
 
 	elif t == "shutdown":
 		log.info("shutdown message received")
+		if processor is not None:
+			processor.complete()
+
 		run = False
 
 	elif t == "import":
@@ -211,7 +197,11 @@ def process_message(msg):
 		sys.path.insert(0, modulepath)
 
 	elif t == "job":
-		return process_job(msg['jobid'], msg['job'])
+		# Asynchronous way
+		if processor is None:
+			processor = Processor(cpucount)
+
+		processor.process_job(msg['jobid'], msg['job'])
 
 	else:
 		log.warn("unknown message type %s", t)

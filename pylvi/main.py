@@ -367,6 +367,7 @@ class GenericPylvi(object):
 
 	def remove_connection(self, connection):
 			self.wantread(connection, False)
+			connection.p.kill()
 			log.debug("subprocess exited with code %d", connection.p.poll())
 			self.connections.discard(connection)
 

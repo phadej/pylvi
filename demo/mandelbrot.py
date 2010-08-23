@@ -214,7 +214,7 @@ def main():
 
 		# We can apply many at once
 		# Better as we dont need to generate all jobs right away
-		pylvi.apply_many(itertools.imap(tojob, m.batchs(n=20000)))
+		pylvi.apply_many(itertools.imap(tojob, m.batchs(n=50000)))
 
 		# or we can add jobs one by one
 		#
